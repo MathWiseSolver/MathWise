@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f6fc">
+<title>Mathwise | Math & Algebra Solver</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f4f7fc;--panel:#fff;--panel-soft:#f8faff;--text:#172033;
+  --muted:#69758b;--line:#e2e8f2;--accent:#4f46e5;--accent-strong:#3730a3;
+  --soft:#eeedff;--green:#087f68;--danger:#c2414b;--shadow:0 18px 55px rgba(28,43,80,.07);
+  --ring:rgba(79,70,229,.18)
+}
+body.dark{
+  color-scheme:dark;--bg:#0c1220;--panel:#141d2e;--panel-soft:#10192a;--text:#edf2ff;
+  --muted:#a0adc4;--line:#29364c;--accent:#a5a0ff;--accent-strong:#c6c3ff;
+  --soft:#252747;--green:#69d9bb;--danger:#ff929a;--shadow:0 18px 55px rgba(0,0,0,.2);--ring:rgba(165,160,255,.2)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 12% 0%,rgba(99,102,241,.08),transparent 34%),var(--bg);color:var(--text);font:15px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.01em;transition:background .2s,color .2s}
+button,input,textarea,select{font:inherit}button{cursor:pointer;transition:transform .16s,box-shadow .16s,border-color .16s,background .16s}button:active{transform:translateY(1px)}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.app{max-width:1160px;margin:auto;min-height:100vh;padding:0 28px}
+header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:20px;letter-spacing:-.045em}
+.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#6d63f5,#4338ca);box-shadow:0 8px 20px rgba(79,70,229,.25);color:white;display:grid;place-items:center;font-size:25px}
+.muted{color:var(--muted)}.small{font-size:12px;letter-spacing:.005em}
+button{border:1px solid transparent;border-radius:11px;padding:10px 15px;font-weight:650}
+.secondary{background:var(--panel);border-color:var(--line);color:var(--text)}.secondary:hover{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.primary{background:linear-gradient(135deg,var(--accent),#6258e8);color:white;font-weight:750;box-shadow:0 7px 18px rgba(79,70,229,.2)}.primary:hover{box-shadow:0 10px 24px rgba(79,70,229,.28);filter:brightness(1.04)}.primary:disabled{opacity:.65;cursor:wait;box-shadow:none}
+.tabs{display:flex;gap:7px;margin:23px 0 28px;padding:5px;border:1px solid var(--line);border-radius:14px;background:var(--panel);width:max-content;max-width:100%;box-shadow:0 4px 14px rgba(28,43,80,.025)}
+.tab{background:transparent;color:var(--muted);padding:9px 15px}.tab.active{background:var(--soft);color:var(--accent);font-weight:800}
+main{max-width:860px;margin:auto}.hero{padding:27px 0 25px}.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.hero .eyebrow:before{content:"";width:20px;height:2px;background:var(--accent);border-radius:2px}
+h1{font-size:clamp(34px,5.5vw,49px);line-height:1.09;letter-spacing:-.065em;margin:13px 0 12px;font-weight:850}h1 span{color:var(--accent)}h2{font-size:18px;letter-spacing:-.025em;margin:0 0 5px;font-weight:800}p{margin-top:5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:25px;margin-bottom:18px;box-shadow:var(--shadow)}
+label{display:block;font-size:13px;font-weight:750;margin:17px 0 8px}textarea,input,select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel-soft);color:var(--text);outline:none;transition:border-color .16s,box-shadow .16s}textarea:focus,input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring)}textarea{resize:vertical;line-height:1.75;min-height:132px}textarea::placeholder,input::placeholder{color:var(--muted);opacity:.78}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.actions label{margin:0}.file-label{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel);font-size:12px;font-weight:700;cursor:pointer;color:var(--text);transition:border-color .16s,background .16s}.file-label:hover{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+#preview{max-width:100%;max-height:260px;display:block;margin-top:15px;border-radius:13px;border:1px solid var(--line)}#result{white-space:pre-wrap;overflow-wrap:anywhere}.answer{background:linear-gradient(135deg,var(--soft),var(--panel-soft));border:1px solid var(--line);padding:18px;border-radius:14px;margin:19px 0}.answer strong{display:block;color:var(--accent);font-size:11px;letter-spacing:.13em}.answer div{font-size:clamp(20px,3vw,25px);font-weight:850;letter-spacing:-.035em;margin-top:7px;overflow-wrap:anywhere}
+.step{padding:15px 0;border-bottom:1px solid var(--line)}.step:last-child{border:0}.step strong{display:block;margin-bottom:5px;font-size:14px}.step div{color:var(--muted)}.notice{padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:var(--panel-soft);font-size:12px;color:var(--muted)}.page{display:none}.page.active{display:block;animation:appear .2s ease}@keyframes appear{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.history-item{padding:15px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--panel)}.history-question{flex:1;min-width:0;overflow-wrap:anywhere}.history-question strong{display:block;font-size:14px}.history-question small{color:var(--muted)}.danger{color:var(--danger);background:transparent;border-color:transparent}.danger:hover{background:rgba(194,65,75,.08)}footer{text-align:center;padding:30px 0;color:var(--muted);font-size:12px;line-height:1.8}footer .credit{display:block;margin-top:5px;font-size:11px;letter-spacing:.025em}footer .credit strong{color:var(--text);font-weight:750}[hidden]{display:none!important}
+#solve .card>h2:before{content:"";display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%;margin:0 9px 2px 0}#solveBtn{min-height:48px;font-size:14px}
+@media(min-width:900px){.hero{padding-top:34px}.card{padding:28px}}
+@media(max-width:600px){.app{padding:0 14px}header{height:70px}.brand{font-size:18px}.logo{width:38px;height:38px;border-radius:12px}.card{padding:18px;border-radius:16px}.hero{padding-top:23px}.tabs{width:100%;justify-content:space-between;margin:17px 0 22px}.tab{flex:1;padding:9px 8px;font-size:13px}.history-item{align-items:flex-start;flex-wrap:wrap}.history-question{flex-basis:100%}.actions button,.file-label{font-size:12px}h1{font-size:36px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">∑</div> Mathwise</div>
+  <button class="secondary" id="theme">☾ Theme</button>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-page="solve">＋ Solve</button>
+  <button class="tab" data-page="history">◷ History</button>
+  <button class="tab" data-page="settings">⚙ Settings</button>
+</nav>
+
+<main>
+<section id="solve" class="page active">
+  <div class="hero">
+    <div class="eyebrow">Your personal math tutor</div>
+    <h1>Understand the <span>steps.</span></h1>
+    <p class="muted">Paste a problem or upload a picture. Learn how to solve it, one step at a time.</p>
+  </div>
+
+  <div class="card">
+    <h2>Your math question</h2>
+    <p class="muted small">Arithmetic, linear, quadratic and cubic equations. Connect an AI model for broader mathematics support.</p>
+    <textarea id="question" rows="5"
+      placeholder="Example: Solve 3x + 7 = 22 and explain every step..."></textarea>
+
+    <div class="actions">
+      <label class="file-label" for="image">▧ Upload screenshot / photo</label>
+      <input id="image" type="file" accept="image/*" hidden>
+      <label class="file-label" for="camera">◎ Take a picture</label>
+      <input id="camera" type="file" accept="image/*" capture="environment" hidden>
+      <button id="remove" class="secondary" hidden>Remove picture</button>
+    </div>
+    <img id="preview" alt="Selected question" hidden>
+    <p id="filename" class="muted small"></p>
+
+    <div class="actions">
+      <button class="secondary example" data-q="Solve 3x + 7 = 22">Linear equation</button>
+      <button class="secondary example" data-q="Solve x^2 - 5x + 6 = 0">Quadratic equation</button>
+      <button class="secondary example" data-q="Solve x^3 - 6x^2 + 11x - 6 = 0">Cubic equation</button>
+      <button class="secondary example" data-q="(25 + 15) / 5">Arithmetic</button>
+    </div>
+
+    <div class="actions" style="margin-top:22px">
+      <button id="solveBtn" class="primary" style="flex:1">Solve step by step →</button>
+    </div>
+    <p id="error" style="color:#d04c55" hidden></p>
+    <p class="muted small">Offline solving supports arithmetic and polynomial equations up to cubic degree. Image solving and broader mathematics require an AI connection.</p>
+  </div>
+
+  <div class="card" id="resultCard" hidden>
+    <h2>Worked solution</h2>
+    <div class="answer"><strong>FINAL ANSWER</strong><div id="answer"></div></div>
+    <div id="result"></div>
+    <p class="muted small" id="method"></p>
+    <button id="copy" class="secondary">Copy solution</button>
+  </div>
+</section>
+
+<section id="history" class="page">
+  <div class="hero">
+    <div class="eyebrow">Your workspace</div>
+    <h1>History</h1>
+    <p class="muted">Your solved questions, saved on this device.</p>
+  </div>
+  <div class="card">
+    <div id="historyList"></div>
+    <p id="emptyHistory" class="muted">No saved solutions yet.</p>
+    <button id="clearHistory" class="danger">Clear all history</button>
+  </div>
+</section>
+
+<section id="settings" class="page">
+  <div class="hero">
+    <div class="eyebrow">Preferences</div>
+    <h1>Settings</h1>
+    <p class="muted">Appearance, AI and offline capabilities.</p>
+  </div>
+
+  <div class="card">
+    <h2>Appearance</h2>
+    <p class="muted small">Choose your preferred theme.</p>
+    <select id="themeChoice">
+      <option value="system">Follow system</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <h2>AI solver</h2>
+    <p class="muted small">Connect a compatible AI provider for broader math coverage and picture-based solving.</p>
+    <div class="notice">
+      API usage may cost money. A key entered here is held in memory for this tab only.
+      For a public app, use a secure backend instead of exposing API keys in the browser.
+    </div>
+    <label for="endpoint">API endpoint</label>
+    <input id="endpoint" value="https://api.openai.com/v1/chat/completions">
+    <label for="model">Model name</label>
+    <input id="model" placeholder="Enter a model supported by your provider">
+    <label for="apiKey">API key (session only)</label>
+    <input id="apiKey" type="password" autocomplete="off" placeholder="Paste API key">
+    <div class="actions">
+      <button class="primary" id="enableAI">Enable AI for this tab</button>
+      <button class="secondary" id="disableAI">Forget key</button>
+    </div>
+    <p id="aiStatus" class="muted small">AI is not configured.</p>
+  </div>
+
+  <div class="card">
+    <h2>Offline mode</h2>
+    <p class="muted">The basic solver and saved history work without an AI account. After deployment as an installable web app, the app shell can also be cached for offline access.</p>
+    <button id="export" class="secondary">Export history</button>
+    <label class="file-label" for="import">Import history JSON</label>
+    <input id="import" type="file" accept=".json,application/json" hidden>
+  </div>
+</section>
+</main>
+<footer>Mathwise · Learn the method, not just the answer.<span class="credit">Built by <strong>Suliman</strong></span></footer>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const KEY = "mathwise_history_v1";
+let picture = null;
+let ai = null;
+let lastText = "";
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+  catch { return []; }
+}
+function putHistory(list) {
+  localStorage.setItem(KEY, JSON.stringify(list.slice(0,100)));
+}
+function setTheme(value) {
+  const dark = value === "dark" ||
+    (value === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.body.classList.toggle("dark", dark);
+  localStorage.setItem("mathwise_theme", value);
+  $("themeChoice").value = value;
+}
+function showPage(name) {
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active",p.id===name));
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active",b.dataset.page===name));
+  if (name==="history") renderHistory();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+$("theme").onclick=()=>setTheme(document.body.classList.contains("dark")?"light":"dark");
+$("themeChoice").onchange=e=>setTheme(e.target.value);
+setTheme(localStorage.getItem("mathwise_theme")||"system");
+
+function setError(message) {
+  $("error").textContent=message;
+  $("error").hidden=!message;
+}
+function chooseImage(file) {
+  if(!file)return;
+  if(!file.type.startsWith("image/"))return setError("Please choose an image.");
+  picture=file;
+  $("preview").src=URL.createObjectURL(file);
+  $("preview").hidden=false;
+  $("remove").hidden=false;
+  $("filename").textContent=file.name;
+  setError("");
+}
+$("image").onchange=e=>chooseImage(e.target.files[0]);
+$("camera").onchange=e=>chooseImage(e.target.files[0]);
+$("remove").onclick=()=>{
+  picture=null;
+  $("preview").hidden=true;
+  $("remove").hidden=true;
+  $("filename").textContent="";
+  $("image").value="";
+  $("camera").value="";
+};
+document.querySelectorAll(".example").forEach(b=>b.onclick=()=>$("question").value=b.dataset.q);
+
+/* A small arithmetic parser; never executes user input as JavaScript. */
+function arithmetic(source) {
+  const s=source.replace(/[×·]/g,"*").replace(/÷/g,"/");
+  const tokens=s.match(/\d+(?:\.\d+)?|[()+\-*/%]/g)||[];
+  if(!tokens.length || tokens.join("")!==s.replace(/\s/g,""))
+    throw Error("Not a supported arithmetic expression.");
+  let i=0;
+  function primary() {
+    const t=tokens[i++];
+    if(t==="(") {
+      const n=add();
+      if(tokens[i++]!==")")throw Error("Check your parentheses.");
+      return n;
+    }
+    if(t==="-")return -primary();
+    if(t==="+")return primary();
+    if(t===undefined || !Number.isFinite(Number(t)))throw Error("Check the expression.");
+    return Number(t);
+  }
+  function mul() {
+    let n=primary();
+    while(["*","/","%"].includes(tokens[i])) {
+      const op=tokens[i++],r=primary();
+      if((op==="/"||op==="%")&&r===0)throw Error("Division by zero is undefined.");
+      n=op==="*"?n*r:op==="/"?n/r:n%r;
+    }
+    return n;
+  }
+  function add() {
+    let n=mul();
+    while(["+","-"].includes(tokens[i])) {
+      const op=tokens[i++],r=mul();
+      n=op==="+"?n+r:n-r;
+    }
+    return n;
+  }
+  const result=add();
+  if(i!==tokens.length)throw Error("Check the expression.");
+  return result;
+}
+
+/* Supports common one-variable linear equations such as 3x+7=22.
+   More complex algebra should use the configured AI solver. */
+function linearEquation(q) {
+  const s=q.replace(/\s/g,"").replace(/−/g,"-").toLowerCase();
+  if((s.match(/=/g)||[]).length!==1)throw Error("Not a supported linear equation.");
+  const [left,right]=s.split("=");
+  function parseSide(side) {
+    const normalized=side.replace(/([0-9])x/g,"$1*x").replace(/x/g,"1*x");
+    const tokens=normalized.match(/\d+(?:\.\d+)?|[()+\-*/x]/g)||[];
+    if(tokens.join("")!==normalized)throw Error("Not a supported linear equation.");
+    let i=0;
+    function primary() {
+      let t=tokens[i++];
+      if(t==="(") {
+        const v=add();
+        if(tokens[i++]!==")")throw Error("Check parentheses.");
+        return v;
+      }
+      if(t==="-"){const a=primary();return {a:-a.a,b:-a.b};}
+      if(t==="+")return primary();
+      if(t==="x")return {a:1,b:0};
+      if(t===undefined||!Number.isFinite(Number(t)))throw Error("Check equation.");
+      return {a:0,b:Number(t)};
+    }
+    function mul() {
+      let v=primary();
+      while(tokens[i]==="*"||tokens[i]==="/") {
+        const op=tokens[i++],r=primary();
+        if(op==="/"&&r.a!==0)throw Error("Cannot divide by an expression containing x offline.");
+        if(op==="/"&&r.b===0)throw Error("Division by zero.");
+        if(op==="*") {
+          if(v.a!==0&&r.a!==0)throw Error("This is not a linear equation.");
+          v={a:v.a*r.b+r.a*v.b,b:v.b*r.b};
+        } else v={a:v.a/r.b,b:v.b/r.b};
+      }
+      return v;
+    }
+    function add() {
+      let v=mul();
+      while(tokens[i]==="+"||tokens[i]==="-") {
+        const sign=tokens[i++]==="+"?1:-1,r=mul();
+        v={a:v.a+sign*r.a,b:v.b+sign*r.b};
+      }
+      return v;
+    }
+    const v=add();
+    if(i!==tokens.length)throw Error("Not a supported linear equation.");
+    return v;
+  }
+  const L=parseSide(left),R=parseSide(right);
+  const a=L.a-R.a,b=R.b-L.b;
+  if(Math.abs(a)<1e-12) {
+    if(Math.abs(b)<1e-12)return {answer:"Infinitely many solutions",steps:["Both sides simplify to the same expression. Every value of x works."]};
+    return {answer:"No solution",steps:["The x terms cancel, leaving a false equality. No value of x works."]};
+  }
+  const x=b/a;
+  return {answer:"x = "+Number(x.toPrecision(12)),steps:[
+    "Start with "+q+".",
+    "Collect the x terms on the left and constants on the right: "+a+"x = "+b+".",
+    "Divide both sides by "+a+" to isolate x.",
+    "Therefore x = "+Number(x.toPrecision(12))+". Substitute into the original equation to check."
+  ]};
+}
+function polynomialEquation(q) {
+  let s = q.toLowerCase()
+    .replace(/[−–]/g, "-").replace(/[×·]/g, "*").replace(/÷/g, "/")
+    .replace(/\s/g, "").replace(/^(solve|find):?/, "");
+  if ((s.match(/=/g) || []).length !== 1) throw Error("Enter one equation with exactly one equals sign.");
+  const parts = s.split("=");
+  if (!parts[0] || !parts[1]) throw Error("Enter an expression on both sides of the equals sign.");
+
+  const EPS = 1e-9;
+  const zero = () => [0, 0, 0, 0];
+  const clean = p => p.map(v => Math.abs(v) < EPS ? 0 : v);
+  const scale = (p, k) => clean(p.map(v => v * k));
+  const multiply = (p, r) => {
+    const out = zero();
+    for (let i = 0; i <= 3; i++) for (let j = 0; j <= 3; j++) {
+      if (!p[i] || !r[j]) continue;
+      if (i + j > 3) throw Error("Offline polynomial solving supports equations up to cubic degree (x³). For higher powers, connect an AI solver in Settings.");
+      out[i + j] += p[i] * r[j];
+    }
+    return clean(out);
+  };
+  function power(p, n) {
+    if (!Number.isInteger(n) || n < 0 || n > 10) throw Error("Offline powers must be whole numbers from 0 to 10.");
+    let out = [1, 0, 0, 0];
+    for (let k = 0; k < n; k++) out = multiply(out, p);
+    return out;
+  }
+  function parseSide(side) {
+    const raw = side.match(/\d+(?:\.\d+)?|x|[()+\-*/^]/g) || [];
+    if (!raw.length || raw.join("") !== side) throw Error("Unsupported symbol or expression. Try a simpler equation.");
+    const tokens = [];
+    for (const t of raw) {
+      const prev = tokens[tokens.length - 1];
+      if (prev && /^(?:\d+(?:\.\d+)?|x|\))$/.test(prev) && /^(?:\d+(?:\.\d+)?|x|\()$/.test(t)) tokens.push("*");
+      tokens.push(t);
+    }
+    let i = 0;
+    function primary() {
+      const t = tokens[i++];
+      if (t === "(") {
+        const p = expression();
+        if (tokens[i++] !== ")") throw Error("Check your parentheses.");
+        return p;
+      }
+      if (t === "x") return [0, 1, 0, 0];
+      if (t !== undefined && /^\d+(?:\.\d+)?$/.test(t)) return [Number(t), 0, 0, 0];
+      throw Error("Check the equation near an operator or number.");
+    }
+    function powered() {
+      let p = primary();
+      if (tokens[i] === "^") {
+        i++;
+        const exponent = tokens[i++];
+        if (exponent === undefined || !/^\d+$/.test(exponent)) throw Error("Use a whole-number exponent, such as x^2 or x^3.");
+        p = power(p, Number(exponent));
+      }
+      return p;
+    }
+    function unary() {
+      if (tokens[i] === "+") { i++; return unary(); }
+      if (tokens[i] === "-") { i++; return scale(unary(), -1); }
+      return powered();
+    }
+    function term() {
+      let p = unary();
+      while (tokens[i] === "*" || tokens[i] === "/") {
+        const op = tokens[i++], r = unary();
+        if (op === "/") {
+          if (Math.abs(r[1]) > EPS || Math.abs(r[2]) > EPS || Math.abs(r[3]) > EPS) throw Error("Offline solving cannot divide by an expression containing x.");
+          if (Math.abs(r[0]) < EPS) throw Error("Division by zero is undefined.");
+          p = scale(p, 1 / r[0]);
+        } else p = multiply(p, r);
+      }
+      return p;
+    }
+    function expression() {
+      let p = term();
+      while (tokens[i] === "+" || tokens[i] === "-") {
+        const op = tokens[i++], r = term();
+        p = clean(p.map((v, k) => v + (op === "+" ? 1 : -1) * r[k]));
+      }
+      return p;
+    }
+    const result = expression();
+    if (i !== tokens.length) throw Error("Check the equation syntax.");
+    return result;
+  }
+  const L = parseSide(parts[0]), R = parseSide(parts[1]);
+  const c = clean(L.map((v, i) => v - R[i]));
+  const d = c[0], b = c[1], a = c[2], k = c[3];
+  const fmt = n => Math.abs(n) < EPS ? "0" : String(Number(n.toPrecision(10)));
+  const fmtPolynomial = p => {
+    const terms = [];
+    for (let i = p.length - 1; i >= 0; i--) {
+      const n = p[i]; if (Math.abs(n) < EPS) continue;
+      const mag = Math.abs(n), coeff = (i > 0 && Math.abs(mag - 1) < EPS) ? "" : fmt(mag);
+      const part = coeff + (i === 0 ? "" : i === 1 ? "x" : "x^" + i);
+      terms.push({sign:n < 0 ? -1 : 1, part});
+    }
+    if (!terms.length) return "0";
+    return terms.map((t,i)=>(i===0?(t.sign<0?"−":""):(t.sign<0?" − ":" + "))+t.part).join("");
+  };
+  const standard = fmtPolynomial(c) + " = 0";
+  if (Math.abs(k) < EPS) {
+    if (Math.abs(a) < EPS) {
+      if (Math.abs(b) < EPS) {
+        if (Math.abs(d) < EPS) return {answer:"Infinitely many solutions",steps:["Simplify both sides of the equation.","Both sides are equivalent, so every value of x satisfies the equation."],method:"Offline algebra"};
+        return {answer:"No solution",steps:["Simplify both sides of the equation.","The variable terms cancel, leaving "+fmt(d)+" = 0, which is false.","Therefore, there is no solution."],method:"Offline algebra"};
+      }
+      const x = -d / b;
+      return {answer:"x = "+fmt(x),steps:["Start with "+q+".","Move all terms to one side: "+standard+".","Collect the variable and constant terms: "+fmt(b)+"x + "+fmt(d)+" = 0.","Isolate x by dividing by "+fmt(b)+".","Therefore, x = "+fmt(x)+". Substitute it into the original equation to check."],method:"Offline linear algebra"};
+    }
+    const D = b*b - 4*a*d, den = 2*a;
+    const steps = ["Move all terms to one side and write the equation in standard form: "+standard+".","Identify a = "+fmt(a)+", b = "+fmt(b)+", and c = "+fmt(d)+".","Calculate the discriminant D = b² − 4ac = ("+fmt(b)+")² − 4("+fmt(a)+")("+fmt(d)+") = "+fmt(D)+"."];
+    if (D < -EPS) {
+      const real = -b/den, imag = Math.sqrt(-D)/Math.abs(den), answer = "x = "+fmt(real)+" ± "+fmt(imag)+"i";
+      return {answer,steps:steps.concat(["The discriminant is negative, so the roots are complex rather than real.","Apply the quadratic formula to obtain "+answer+"."]),method:"Offline quadratic algebra"};
+    }
+    if (Math.abs(D) <= EPS) {
+      const x = -b/den;
+      return {answer:"x = "+fmt(x)+" (double root)",steps:steps.concat(["Because D = 0, there is one repeated real root.","Use x = −b/(2a) to obtain x = "+fmt(x)+".","Substitute the root into the original equation to check."]),method:"Offline quadratic algebra"};
+    }
+    const root = Math.sqrt(D), x1 = (-b+root)/den, x2 = (-b-root)/den;
+    return {answer:"x = "+fmt(x1)+" or x = "+fmt(x2),steps:steps.concat(["Since D is positive, there are two distinct real roots.","Apply x = (−b ± √D)/(2a).","The solutions are x = "+fmt(x1)+" and x = "+fmt(x2)+".","Substitute both values into the original equation to check."]),method:"Offline quadratic algebra"};
+  }
+
+  // Cardano's formula for cubic equations: k*x^3 + a*x^2 + b*x + d = 0.
+  const A = a/k, B = b/k, C = d/k;
+  const p = B - A*A/3, q3 = 2*A*A*A/27 - A*B/3 + C;
+  const delta = q3*q3/4 + p*p*p/27;
+  const shift = A/3;
+  const cbrt = n => Math.sign(n)*Math.pow(Math.abs(n),1/3);
+  const steps = ["Move all terms to one side and write the equation in standard form: "+standard+".","Divide by the leading coefficient "+fmt(k)+" to make the coefficient of x³ equal to 1.","For x³ + Ax² + Bx + C = 0, use A = "+fmt(A)+", B = "+fmt(B)+", and C = "+fmt(C)+".","Remove the x² term with the substitution x = t − A/3. The resulting depressed cubic is t³ + pt + q = 0, where p = "+fmt(p)+" and q = "+fmt(q3)+".","Calculate Δ = (q/2)² + (p/3)³ = "+fmt(delta)+"."];
+  if (delta > EPS) {
+    const u = cbrt(-q3/2 + Math.sqrt(delta)), v = cbrt(-q3/2 - Math.sqrt(delta));
+    const real = u+v-shift, pairReal = -(u+v)/2-shift, pairImag = Math.sqrt(3)*(u-v)/2;
+    const answer = "x ≈ "+fmt(real)+"; x ≈ "+fmt(pairReal)+" ± "+fmt(Math.abs(pairImag))+"i";
+    return {answer,steps:steps.concat(["Because Δ is positive, the cubic has one real root and a complex-conjugate pair.","Using Cardano’s formula gives the real root x ≈ "+fmt(real)+" and the complex roots x ≈ "+fmt(pairReal)+" ± "+fmt(Math.abs(pairImag))+"i."]),method:"Offline cubic algebra (Cardano’s formula)"};
+  }
+  if (Math.abs(delta) <= EPS) {
+    const u = cbrt(-q3/2), r1 = 2*u-shift, r2 = -u-shift;
+    let answer, extra;
+    if (Math.abs(r1-r2) < 1e-7) { answer = "x = "+fmt(r1)+" (triple root)"; extra = "The equation has one real root with multiplicity three: x = "+fmt(r1)+"."; }
+    else { answer = "x = "+fmt(r1)+" and x = "+fmt(r2)+" (double root)"; extra = "The equation has two distinct real roots: x = "+fmt(r1)+" and x = "+fmt(r2)+", with the second root repeated."; }
+    return {answer,steps:steps.concat(["Because Δ = 0, the cubic has repeated real roots.",extra,"Substitute the roots into the original equation to check."]),method:"Offline cubic algebra (Cardano’s formula)"};
+  }
+  if (p >= 0) throw Error("This cubic could not be evaluated reliably offline. Try the AI solver in Settings.");
+  const radius = 2*Math.sqrt(-p/3), arg = Math.max(-1,Math.min(1,(3*q3/(2*p))*Math.sqrt(-3/p))), theta = Math.acos(arg)/3;
+  const roots = [0,1,2].map(j=>radius*Math.cos(theta-2*Math.PI*j/3)-shift).sort((x,y)=>x-y);
+  const unique = roots.filter((x,i)=>i===0||Math.abs(x-roots[i-1])>1e-7);
+  const answer = unique.map(x=>"x = "+fmt(x)).join("; ");
+  return {answer,steps:steps.concat(["Because Δ is negative, the cubic has three distinct real roots.","Use the trigonometric form of Cardano’s method to obtain: "+roots.map(fmt).join(", ")+".","Substitute each root into the original equation to check."]),method:"Offline cubic algebra (three real roots)"};
+}
+function offlineSolve(q) {
+  try {
+    const value=arithmetic(q);
+    return {answer:String(Number(value.toPrecision(12))),steps:[
+      "Read the expression: "+q+".",
+      "Apply parentheses first, then multiplication and division from left to right.",
+      "Apply addition and subtraction from left to right.",
+      "The result is "+Number(value.toPrecision(12))+"."
+    ],method:"Offline arithmetic"};
+  } catch(e) {
+    if(e.message==="Division by zero is undefined.")throw e;
+  }
+  const r=polynomialEquation(q);
+  return {answer:r.answer,steps:r.steps,method:r.method||"Offline algebra"};
+}
+function fileData(file) {
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function aiSolve(question,image) {
+  if(!ai)throw Error("This question needs AI. Open Settings to configure an AI endpoint, model and API key.");
+  const content=[];
+  content.push({type:"text",text:question||"Read this picture and solve the math problem step by step. If any symbol is unclear, say so."});
+  if(image)content.push({type:"image_url",image_url:{url:await fileData(image)}});
+  const response=await fetch(ai.endpoint,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+ai.key},
+    body:JSON.stringify({
+      model:ai.model,temperature:0.2,
+      messages:[
+        {role:"system",content:"You are a careful mathematics tutor. Solve the exact problem and explain each step clearly. Check the answer when practical. If reading an image, identify uncertain symbols instead of guessing. Return JSON only in this format: {\"answer\":\"final answer\",\"steps\":[{\"title\":\"Step title\",\"explanation\":\"Detailed explanation\"}],\"note\":\"Any important qualification\"}."},
+        {role:"user",content:image?content:question}
+      ]
+    })
+  });
+  if(!response.ok)throw Error("AI request failed ("+response.status+"). Check the endpoint, model, key and provider permissions.");
+  const data=await response.json();
+  let output=data.choices?.[0]?.message?.content;
+  if(Array.isArray(output))output=output.map(v=>v.text||"").join("");
+  if(!output)throw Error("The AI provider returned no answer.");
+  output=output.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/,"");
+  try{return {...JSON.parse(output),method:"AI-assisted"};}
+  catch{return {answer:"See explanation",steps:[{title:"AI solution",explanation:output}],method:"AI-assisted"};}
+}
+function escapeHTML(v) {
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function solutionText(item) {
+  return "Question: "+item.question+"\nAnswer: "+item.answer+"\n\n"+
+    item.steps.map((s,i)=>(i+1)+". "+(typeof s==="string"?s:(s.title+"\n"+s.explanation))).join("\n\n");
+}
+function displaySolution(item) {
+  $("answer").textContent=item.answer||"Review the explanation";
+  $("result").innerHTML=(item.steps||[]).map((s,i)=>{
+    const title=typeof s==="string"?"Step "+(i+1):(s.title||"Step "+(i+1));
+    const body=typeof s==="string"?s:(s.explanation||"");
+    return '<div class="step"><strong>'+(i+1)+". "+escapeHTML(title)+'</strong><div>'+escapeHTML(body)+'</div></div>';
+  }).join("");
+  $("method").textContent=item.method||"Solution";
+  $("resultCard").hidden=false;
+}
+$("copy").onclick=async()=>{
+  try {
+    const item=window.currentSolution;
+    await navigator.clipboard.writeText(solutionText(item));
+    $("copy").textContent="Copied!";
+  } catch {$("copy").textContent="Copy unavailable";}
+};
+$("solveBtn").onclick=async()=>{
+  const question=$("question").value.trim();
+  if(!question&&!picture)return setError("Enter a question or upload a picture.");
+  setError("");
+  const btn=$("solveBtn");btn.disabled=true;btn.textContent="Solving…";
+  try {
+    let solved;
+    if(ai)solved=await aiSolve(question,picture);
+    else if(picture)throw Error("Picture solving needs AI in Settings. Configure AI to read and solve a photo.");
+    else solved=offlineSolve(question);
+    const item={id:Date.now(),question:question||(picture?"Uploaded picture":"Math problem"),answer:solved.answer,steps:solved.steps,method:solved.method||"Solver",date:new Date().toISOString()};
+    window.currentSolution=item;
+    putHistory([item,...getHistory()].slice(0,100));
+    displaySolution(item);
+    $("resultCard").scrollIntoView({behavior:"smooth",block:"start"});
+  } catch(e) {setError(e.message||"Could not solve this question.");}
+  finally {btn.disabled=false;btn.textContent="Solve step by step →";}
+};
+function renderHistory() {
+  const items=getHistory();
+  $("historyList").innerHTML=items.map(item=>
+    '<div class="history-item"><div class="history-question"><strong>'+escapeHTML(item.question)+'</strong><small>'+escapeHTML(item.date?new Date(item.date).toLocaleString():"")+' · '+escapeHTML(item.answer)+'</small></div><button class="secondary" data-open="'+item.id+'">Open</button><button class="danger" data-delete="'+item.id+'">×</button></div>'
+  ).join("");
+  $("emptyHistory").hidden=items.length>0;
+  $("clearHistory").hidden=items.length===0;
+  $("historyList").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{
+    const item=getHistory().find(x=>x.id==b.dataset.open);
+    if(item){window.currentSolution=item;$("question").value=item.question;displaySolution(item);showPage("solve");}
+  });
+  $("historyList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{
+    putHistory(getHistory().filter(x=>x.id!=b.dataset.delete));renderHistory();
+  });
+}
+$("clearHistory").onclick=()=>{
+  if(confirm("Delete all saved questions from this browser?")){putHistory([]);renderHistory();}
+};
+$("enableAI").onclick=()=>{
+  const endpoint=$("endpoint").value.trim(),model=$("model").value.trim(),key=$("apiKey").value.trim();
+  if(!endpoint||!model||!key){$("aiStatus").textContent="Enter the endpoint, model and API key.";return;}
+  try{new URL(endpoint);}catch{$("aiStatus").textContent="Enter a valid endpoint URL.";return;}
+  ai={endpoint,model,key};
+  $("aiStatus").textContent="AI is active in this tab. The key is not saved in local storage.";
+};
+$("disableAI").onclick=()=>{ai=null;$("apiKey").value="";$("aiStatus").textContent="AI key cleared from this tab.";};
+$("export").onclick=()=>{
+  const blob=new Blob([JSON.stringify(getHistory(),null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="mathwise-history.json";a.click();URL.revokeObjectURL(url);
+};
+$("import").onchange=async e=>{
+  try{
+    const data=JSON.parse(await e.target.files[0].text());
+    if(!Array.isArray(data))throw Error();
+    putHistory([...data,...getHistory()].slice(0,100));renderHistory();
+    alert("History imported.");
+  }catch{alert("This is not a valid history JSON file.");}
+  e.target.value="";
+};
+</script>
+</body>
+</html>
